@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Expense Tracker</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(to right, #e3f2fd, #f0f7ff);
+      padding: 30px 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      background-color: #ffffff;
+      width: 100%;
+      max-width: 700px;
+      padding: 25px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      margin-bottom: 40px;
+      border: 2px solid #90caf9;
+    }
+
+    img[alt="Kenomics logo"] {
+      width: 100px;
+      display: block;
+      margin: 0 auto 15px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #1565c0;
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    h2 {
+      font-size: 20px;
+      color: #1976d2;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form label {
+      margin-top: 15px;
+      display: block;
+      font-weight: 600;
+      color: #0d47a1;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #bbdefb;
+      border-radius: 6px;
+      font-size: 15px;
+      background-color: #f9fcff;
+      transition: border-color 0.3s;
+    }
+
+    input:focus, select:focus {
+      border-color: #64b5f6;
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 12px;
+      background-color: #42a5f5;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #1e88e5;
+    }
+
+    h3 {
+      font-size: 18px;
+      color: #0d47a1;
+      margin-top: 35px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    table, th, td {
+      border: 1px solid #bbdefb;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    th {
+      background-color: #e3f2fd;
+      color: #1565c0;
+    }
+
+    .delete-btn {
+      background-color: #ef5350;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .delete-btn:hover {
+      background-color: #d32f2f;
+    }
+
+    .bank-section {
+      max-width: 700px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .bank-section h3 {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #1565c0;
+    }
+
+    .bank-logos {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .bank-logos img {
+      width: 90px;
+      height: auto;
+      transition: transform 0.2s ease-in-out, filter 0.3s;
+      filter: grayscale(30%);
+    }
+
+    .bank-logos img:hover {
+      transform: scale(1.08);
+      filter: grayscale(0%);
+    }
+
+    #budgetAlert {
+      color: red;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 500px) {
+      h1 {
+        font-size: 24px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      button {
+        font-size: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <img src="https://iili.io/FcA2X5J.png" alt="Kenomics logo">
+    <h1>Kenomics</h1>
+    <h2>Student Expense Tracker</h2>
+
+    <form id="googleForm">
+      <label for="date">When did you spend?</label>
+      <input type="date" id="date" name="date" required>
+
+      <label for="description">What was it for?</label>
+      <input type="text" id="description" name="description" placeholder="e.g. Lunch at Foodsquare" required>
+
+      <label for="category">Pick a category:</label>
+      <select id="category" name="category" required>
+        <option value="">-- Select --</option>
+        <option value="Food">Food</option>
+        <option value="Transport">Transport</option>
+        <option value="Bills">Bills</option>
+        <option value="Entertainment">Entertainment</option>
+        <option value="Others">Others</option>
+      </select>
+
+      <label for="amount">How much did you spend? (₱)</label>
+      <input type="number" id="amount" name="amount" step="0.01" required>
+
+      <label for="allotted">Your daily budget (₱):</label>
+      <input type="number" id="allotted" name="allotted" step="0.01" required>
+
+      <button type="submit">Save Expense</button>
+    </form>
+
+    <div id="summary" style="margin-top: 20px; text-align: center; font-weight: bold; color: #1565c0;">
+      Total Spent Today: ₱<span id="totalSpent">0.00</span>
+    </div>
+
+    <div id="budgetAlert"></div>
+
+    <h3>Your Expenses Today</h3>
+    <table id="expenseTable">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Category</th>
+          <th>Amount</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+       
+      </tbody>
+    </table>
+
+    <h3>💡 Budget Guide: Suggested Daily Amount</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Suggested Budget (₱)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Food</td><td>₱150</td></tr>
+        <tr><td>Transport</td><td>₱50</td></tr>
+        <tr><td>Bills</td><td>₱100</td></tr>
+        <tr><td>Entertainment</td><td>₱75</td></tr>
+        <tr><td>Others</td><td>₱25</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="bank-section">
+    <h3>✨ Need to withdraw or deposit? Choose a Bank:</h3>
+    <div class="bank-logos">
+      <a href="https://www.metrobank.com.ph/services/mb-online" target="_blank">
+        <img src="https://iili.io/FcRnfLJ.png" alt="Metrobank">
+      </a>
+      <a href="https://www.bpi.com.ph/personal/bank/digital-banking/online" target="_blank">
+        <img src="https://iili.io/FcRO0Fa.jpg" alt="BPI">
+      </a>
+      <a href="https://www.pnb.com.ph/index.php/pnb-digital-banking" target="_blank">
+        <img src="https://iili.io/FcRrfEB.png" alt="PNB">
+      </a>
+    </div>
+  </div>
+
+  <script>
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbx8dKTn71BYYRho_0bzKot8dDddl3a1kcNL-uEktutKs1JzlNuPseQmKC0jQTagGxGe/exec';
+  const form = document.getElementById('googleForm');
+  const totalDisplay = document.getElementById('totalSpent');
+  const budgetAlert = document.getElementById('budgetAlert');
+  const expenseTable = document.getElementById('expenseTable').querySelector('tbody');
+
+  let expenses = [];
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const date = document.getElementById('date').value;
+    const description = document.getElementById('description').value;
+    const category = document.getElementById('category').value;
+    const amount = parseFloat(document.getElementById('amount').value);
+    const budget = parseFloat(document.getElementById('allotted').value);
+
+    if (!isNaN(amount)) {
+      expenses.push({ date, description, category, amount, budget });
+      renderExpenses(); 
+
+      fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+        .then(response => {
+          alert("✅ Your expense was saved!");
+          form.reset();
+        })
+        .catch(error => alert('❌ Error: ' + error.message));
+    }
+  });
+
+  
+  function renderExpenses() {
+    expenseTable.innerHTML = "";
+    let totalSpent = 0;
+
+    for (let i = 0; i < expenses.length; i++) {
+      const exp = expenses[i];
+      totalSpent += exp.amount;
+
+      const newRow = document.createElement('tr');
+      newRow.innerHTML = `
+        <td>${exp.date}</td>
+        <td>${exp.description}</td>
+        <td>${exp.category}</td>
+        <td>₱${exp.amount.toFixed(2)}</td>
+        <td><button class="delete-btn" data-index="${i}">Delete</button></td>
+      `;
+      expenseTable.appendChild(newRow);
+    }
+
+    totalDisplay.textContent = totalSpent.toFixed(2);
+
+    if (expenses.length > 0) {
+      const budget = expenses[expenses.length - 1].budget;
+      budgetAlert.textContent = totalSpent > budget ? "⚠️ You have exceeded your daily budget!" : "";
+    }
+
+    // ✅ Handle delete buttons
+    document.querySelectorAll('.delete-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        const index = parseInt(button.getAttribute('data-index'));
+        expenses.splice(index, 1);
+        renderExpenses();
+      });
+    });
+  }
+</script>
+
+
+
+</body>
+</html>
