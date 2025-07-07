@@ -36,18 +36,19 @@
       margin: 0 auto 15px;
     }
 
+    h1, h2 {
+      text-align: center;
+      color: #1565c0;
+      margin-bottom: 10px;
+    }
+
     h1 {
       font-size: 28px;
-      color: #1565c0;
-      text-align: center;
-      margin-bottom: 5px;
     }
 
     h2 {
       font-size: 20px;
       color: #1976d2;
-      text-align: center;
-      margin-bottom: 20px;
     }
 
     form label {
@@ -65,12 +66,6 @@
       border-radius: 6px;
       font-size: 15px;
       background-color: #f9fcff;
-      transition: border-color 0.3s;
-    }
-
-    input:focus, select:focus {
-      border-color: #64b5f6;
-      outline: none;
     }
 
     button {
@@ -78,41 +73,32 @@
       margin-top: 25px;
       padding: 12px;
       background-color: #42a5f5;
-      color: #fff;
+      color: white;
       border: none;
       border-radius: 6px;
       font-size: 16px;
-      font-weight: 600;
+      font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.3s;
     }
 
     button:hover {
       background-color: #1e88e5;
     }
 
-    h3 {
-      font-size: 18px;
-      color: #0d47a1;
-      margin-top: 35px;
-      margin-bottom: 15px;
+    #budgetAlert {
+      font-weight: bold;
       text-align: center;
+      margin-top: 15px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
+      margin-top: 20px;
     }
 
     table, th, td {
       border: 1px solid #bbdefb;
-    }
-
-    th, td {
-      padding: 10px;
-      text-align: center;
-      font-size: 15px;
     }
 
     th {
@@ -120,14 +106,18 @@
       color: #1565c0;
     }
 
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+
     .delete-btn {
       background-color: #ef5350;
-      border: none;
       color: white;
+      border: none;
       padding: 5px 10px;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 13px;
     }
 
     .delete-btn:hover {
@@ -135,15 +125,8 @@
     }
 
     .bank-section {
-      max-width: 700px;
-      width: 100%;
       text-align: center;
-    }
-
-    .bank-section h3 {
-      font-size: 18px;
-      margin-bottom: 20px;
-      color: #1565c0;
+      margin-top: 40px;
     }
 
     .bank-logos {
@@ -155,34 +138,13 @@
 
     .bank-logos img {
       width: 90px;
-      height: auto;
-      transition: transform 0.2s ease-in-out, filter 0.3s;
       filter: grayscale(30%);
+      transition: transform 0.2s, filter 0.3s;
     }
 
     .bank-logos img:hover {
-      transform: scale(1.08);
       filter: grayscale(0%);
-    }
-
-    #budgetAlert {
-      font-weight: bold;
-      text-align: center;
-      margin-top: 10px;
-    }
-
-    @media (max-width: 500px) {
-      h1 {
-        font-size: 24px;
-      }
-
-      h2 {
-        font-size: 18px;
-      }
-
-      button {
-        font-size: 15px;
-      }
+      transform: scale(1.08);
     }
   </style>
 </head>
@@ -198,7 +160,7 @@
       <input type="date" id="date" name="date" required>
 
       <label for="description">What was it for?</label>
-      <input type="text" id="description" name="description" placeholder="e.g. Lunch at Foodsquare" required>
+      <input type="text" id="description" name="description" required>
 
       <label for="category">Pick a category:</label>
       <select id="category" name="category" required>
@@ -225,7 +187,7 @@
 
     <div id="budgetAlert"></div>
 
-    <h3>Your Expenses Today</h3>
+    <h3 style="text-align: center; margin-top: 30px;">Your Expenses Today</h3>
     <table id="expenseTable">
       <thead>
         <tr>
@@ -236,26 +198,7 @@
           <th>Action</th>
         </tr>
       </thead>
-      <tbody>
-       
-      </tbody>
-    </table>
-
-    <h3>💡 Budget Guide: Suggested Daily Amount</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Category</th>
-          <th>Suggested Budget (₱)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Food</td><td>₱150</td></tr>
-        <tr><td>Transport</td><td>₱50</td></tr>
-        <tr><td>Bills</td><td>₱100</td></tr>
-        <tr><td>Entertainment</td><td>₱75</td></tr>
-        <tr><td>Others</td><td>₱25</td></tr>
-      </tbody>
+      <tbody></tbody>
     </table>
   </div>
 
@@ -278,4 +221,76 @@
     const scriptURL = 'https://script.google.com/macros/s/AKfycbx8dKTn71BYYRho_0bzKot8dDddl3a1kcNL-uEktutKs1JzlNuPseQmKC0jQTagGxGe/exec';
     const form = document.getElementById('googleForm');
     const totalDisplay = document.getElementById('totalSpent');
-    const budgetAlert =
+    const budgetAlert = document.getElementById('budgetAlert');
+    const expenseTable = document.getElementById('expenseTable').querySelector('tbody');
+
+    let expenses = [];
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+
+      const date = document.getElementById('date').value;
+      const description = document.getElementById('description').value;
+      const category = document.getElementById('category').value;
+      const amount = parseFloat(document.getElementById('amount').value);
+      const budget = parseFloat(document.getElementById('allotted').value);
+
+      if (!isNaN(amount)) {
+        expenses.push({ date, description, category, amount, budget });
+        renderExpenses();
+
+        fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+          .then(response => {
+            alert("✅ Your expense was saved!");
+            form.reset();
+          })
+          .catch(error => alert('❌ Error: ' + error.message));
+      }
+    });
+
+    function renderExpenses() {
+      expenseTable.innerHTML = "";
+      let totalSpent = 0;
+
+      expenses.forEach((exp, i) => {
+        totalSpent += exp.amount;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${exp.date}</td>
+          <td>${exp.description}</td>
+          <td>${exp.category}</td>
+          <td>₱${exp.amount.toFixed(2)}</td>
+          <td><button class="delete-btn" data-index="${i}">Delete</button></td>
+        `;
+        expenseTable.appendChild(row);
+      });
+
+      totalDisplay.textContent = totalSpent.toFixed(2);
+
+      if (expenses.length > 0) {
+        const budget = expenses[expenses.length - 1].budget;
+
+        if (totalSpent > budget) {
+          budgetAlert.textContent = "⚠️ You have exceeded your daily budget!";
+          budgetAlert.style.color = "red";
+        } else {
+          budgetAlert.textContent = "✅ You are within your daily budget.";
+          budgetAlert.style.color = "green";
+        }
+      } else {
+        budgetAlert.textContent = "";
+      }
+
+      // Delete button handler
+      document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', () => {
+          const index = parseInt(button.getAttribute('data-index'));
+          expenses.splice(index, 1);
+          renderExpenses();
+        });
+      });
+    }
+  </script>
+</body>
+</html>
