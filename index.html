@@ -200,6 +200,23 @@
       </thead>
       <tbody></tbody>
     </table>
+
+    <h3 style="text-align: center; margin-top: 30px;">💡 Budget Guide: Suggested Daily Amount</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Suggested Budget (₱)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Food</td><td>₱150</td></tr>
+        <tr><td>Transport</td><td>₱50</td></tr>
+        <tr><td>Bills</td><td>₱100</td></tr>
+        <tr><td>Entertainment</td><td>₱75</td></tr>
+        <tr><td>Others</td><td>₱25</td></tr>
+      </tbody>
+    </table>
   </div>
 
   <div class="bank-section">
@@ -282,7 +299,7 @@
         budgetAlert.textContent = "";
       }
 
-      // Delete button handler
+      // Delete button logic
       document.querySelectorAll('.delete-btn').forEach(button => {
         button.addEventListener('click', () => {
           const index = parseInt(button.getAttribute('data-index'));
