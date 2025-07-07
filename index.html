@@ -166,7 +166,6 @@
     }
 
     #budgetAlert {
-      color: red;
       font-weight: bold;
       text-align: center;
       margin-top: 10px;
@@ -276,75 +275,7 @@
   </div>
 
   <script>
-  const scriptURL = 'https://script.google.com/macros/s/AKfycbx8dKTn71BYYRho_0bzKot8dDddl3a1kcNL-uEktutKs1JzlNuPseQmKC0jQTagGxGe/exec';
-  const form = document.getElementById('googleForm');
-  const totalDisplay = document.getElementById('totalSpent');
-  const budgetAlert = document.getElementById('budgetAlert');
-  const expenseTable = document.getElementById('expenseTable').querySelector('tbody');
-
-  let expenses = [];
-
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-
-    const date = document.getElementById('date').value;
-    const description = document.getElementById('description').value;
-    const category = document.getElementById('category').value;
-    const amount = parseFloat(document.getElementById('amount').value);
-    const budget = parseFloat(document.getElementById('allotted').value);
-
-    if (!isNaN(amount)) {
-      expenses.push({ date, description, category, amount, budget });
-      renderExpenses(); 
-
-      fetch(scriptURL, { method: 'POST', body: new FormData(form) })
-        .then(response => {
-          alert("✅ Your expense was saved!");
-          form.reset();
-        })
-        .catch(error => alert('❌ Error: ' + error.message));
-    }
-  });
-
-  
-  function renderExpenses() {
-    expenseTable.innerHTML = "";
-    let totalSpent = 0;
-
-    for (let i = 0; i < expenses.length; i++) {
-      const exp = expenses[i];
-      totalSpent += exp.amount;
-
-      const newRow = document.createElement('tr');
-      newRow.innerHTML = `
-        <td>${exp.date}</td>
-        <td>${exp.description}</td>
-        <td>${exp.category}</td>
-        <td>₱${exp.amount.toFixed(2)}</td>
-        <td><button class="delete-btn" data-index="${i}">Delete</button></td>
-      `;
-      expenseTable.appendChild(newRow);
-    }
-
-    totalDisplay.textContent = totalSpent.toFixed(2);
-
-    if (expenses.length > 0) {
-      const budget = expenses[expenses.length - 1].budget;
-      budgetAlert.textContent = totalSpent > budget ? "⚠️ You have exceeded your daily budget!" : "";
-    }
-
-    // ✅ Handle delete buttons
-    document.querySelectorAll('.delete-btn').forEach(button => {
-      button.addEventListener('click', () => {
-        const index = parseInt(button.getAttribute('data-index'));
-        expenses.splice(index, 1);
-        renderExpenses();
-      });
-    });
-  }
-</script>
-
-
-
-</body>
-</html>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbx8dKTn71BYYRho_0bzKot8dDddl3a1kcNL-uEktutKs1JzlNuPseQmKC0jQTagGxGe/exec';
+    const form = document.getElementById('googleForm');
+    const totalDisplay = document.getElementById('totalSpent');
+    const budgetAlert =
